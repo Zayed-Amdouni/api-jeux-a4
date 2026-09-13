@@ -10,7 +10,7 @@ from app.services import editeurs as service
 routeur = APIRouter(prefix="/editeurs", tags=["Éditeurs"])
 
 
-@routeur.get("", response_model=Page[EditeurSortie], summary="Lister les éditeurs")
+@routeur.get("", response_model=Page[EditeurSortie], summary="List publishers")
 def lister(session: SessionDep, page: PaginationDep):
     elements, total = service.lister(session, page.saut, page.limite)
     return Page(elements=elements, total=total, saut=page.saut, limite=page.limite)
@@ -19,15 +19,15 @@ def lister(session: SessionDep, page: PaginationDep):
 @routeur.get(
     "/{editeur_id}",
     response_model=EditeurSortie,
-    summary="Lire un éditeur",
-    responses={404: {"model": ErreurReponse, "description": "Éditeur introuvable"}},
+    summary="Get publisher",
+    responses={404: {"model": ErreurReponse, "description": "Publisher not found"}},
 )
 def lire(session: SessionDep, editeur_id: int):
     return service.trouver(session, editeur_id)
 
 
 @routeur.get(
-    "/{editeur_id}/jeux", response_model=list[JeuResume], summary="Les jeux d'un éditeur"
+    "/{editeur_id}/jeux", response_model=list[JeuResume], summary="Publisher games"
 )
 def lister_jeux(session: SessionDep, editeur_id: int):
     return service.jeux_de(session, editeur_id)
@@ -37,7 +37,7 @@ def lister_jeux(session: SessionDep, editeur_id: int):
     "",
     response_model=EditeurSortie,
     status_code=status.HTTP_201_CREATED,
-    summary="Créer un éditeur",
+    summary="Create publisher",
     responses=REPONSES_DROITS,
 )
 def creer(session: SessionDep, entree: EditeurEntree, admin: AdminDep):
@@ -47,7 +47,7 @@ def creer(session: SessionDep, entree: EditeurEntree, admin: AdminDep):
 @routeur.delete(
     "/{editeur_id}",
     status_code=status.HTTP_204_NO_CONTENT,
-    summary="Supprimer un éditeur",
+    summary="Delete publisher",
     responses=REPONSES_DROITS,
 )
 def supprimer(session: SessionDep, editeur_id: int, admin: AdminDep):

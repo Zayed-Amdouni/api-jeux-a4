@@ -14,24 +14,23 @@ def lister(session: Session, saut: int = 0, limite: int = 50) -> tuple[list[Edit
 
 
 def trouver(session: Session, editeur_id: int) -> Editeur:
-    editeur = depot.par_id(session, editeur_id)
-    if editeur is None:
+    e = depot.par_id(session, editeur_id)
+    if e is None:
         raise EditeurIntrouvable(editeur_id)
-    return editeur
+    return e
 
 
 def jeux_de(session: Session, editeur_id: int):
-    """`selectinload` charge les jeux en une requête supplémentaire, pas une par jeu."""
-    editeur = depot.par_id_avec_jeux(session, editeur_id)
-    if editeur is None:
+    e = depot.par_id_avec_jeux(session, editeur_id)
+    if e is None:
         raise EditeurIntrouvable(editeur_id)
-    return editeur.jeux
+    return e.jeux
 
 
 def creer(session: Session, entree: EditeurEntree) -> Editeur:
-    editeur = Editeur(**entree.model_dump())
+    e = Editeur(**entree.model_dump())
     try:
-        return depot.enregistrer(session, editeur)
+        return depot.enregistrer(session, e)
     except IntegrityError:
         session.rollback()
         raise ErreurMetier(

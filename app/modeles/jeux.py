@@ -17,6 +17,7 @@ class Genre(str, Enum):
 
     action = "Action"
     aventure = "Aventure"
+    horreur = "Horreur"
     metroidvania = "Metroidvania"
     party = "Party"
     plateforme = "Plateforme"
