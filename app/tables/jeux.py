@@ -66,6 +66,10 @@ class Jeu(Base):
         back_populates="jeu", cascade="all, delete-orphan", order_by="Modification.date"
     )
 
+    @property
+    def editeur_nom(self) -> str | None:
+        return self.editeur.nom if self.editeur else None
+
 
 class Modification(Base):
     """Historique des modifications — séance 2, exercice final A.
