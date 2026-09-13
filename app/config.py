@@ -18,7 +18,7 @@ class Configuration(BaseSettings):
 
     # Facultatives, avec une valeur par défaut raisonnable.
     algorithme_jeton: str = "HS256"
-    duree_jeton_minutes: int = 30
+    duree_jeton_minutes: int = 60 * 24 * 30  # plus pratique, on se reconnecte plus sans arrêt
     origines_autorisees: list[str] = ["http://localhost:5173"]
     environnement: str = "developpement"
     niveau_journal: str = "INFO"
