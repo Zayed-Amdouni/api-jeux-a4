@@ -68,6 +68,13 @@ def statistiques(session: SessionDep):
     return service.statistiques(session)
 
 
+@routeur.get("/genres", response_model=list[str], summary="Genres présents dans le catalogue")
+def lister_genres(session: SessionDep):
+    """Seuls les genres portés par au moins un jeu. La liste de tous les genres
+    acceptés figure déjà dans le schéma OpenAPI, via l'énumération `Genre`."""
+    return service.genres(session)
+
+
 @routeur.get(
     "/{jeu_id}",
     response_model=JeuSortie,
