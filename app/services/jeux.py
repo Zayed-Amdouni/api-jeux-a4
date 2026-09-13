@@ -54,6 +54,10 @@ def recommandes(session: Session, note_minimale: int = 8, limite: int = 20) -> l
     return depot.lister(session, note_min=note_minimale, tri="note", limite=limite)
 
 
+def par_editeur(session: Session, nom: str) -> list[Jeu]:
+    return depot.par_nom_editeur(session, nom)
+
+
 def genres(session: Session) -> list[str]:
     return depot.genres_distincts(session)
 

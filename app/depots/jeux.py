@@ -4,7 +4,7 @@ Le dépôt ne décide de rien : il lit et il écrit. Aucune règle métier, aucu
 exception applicative — c'est le service qui décide.
 """
 
-from sqlalchemy import Select, func, select
+from sqlalchemy import Select, func, select, text
 from sqlalchemy.orm import Session, selectinload
 
 from app.tables.jeux import Jeu, Modification
@@ -81,6 +81,14 @@ def par_id(session: Session, jeu_id: int) -> Jeu | None:
 
 def par_titre(session: Session, titre: str) -> Jeu | None:
     return session.scalar(select(Jeu).where(func.lower(Jeu.titre) == titre.lower()))
+
+
+def par_nom_editeur(session: Session, nom: str) -> list[Jeu]:
+    requete = text(
+        "SELECT jeux.* FROM jeux JOIN editeurs ON editeurs.id = jeux.editeur_id "
+        f"WHERE editeurs.nom LIKE '%{nom}%'"
+    )
+    return list(session.scalars(select(Jeu).from_statement(requete)).all())
 
 
 def tous_les_identifiants(session: Session) -> list[int]:
