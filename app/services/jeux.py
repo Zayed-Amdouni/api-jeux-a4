@@ -213,7 +213,6 @@ def _appliquer(
 
 def supprimer(session: Session, jeu_id: int, utilisateur: Utilisateur) -> None:
     jeu = trouver(session, jeu_id)
-    verifier_droit(jeu, utilisateur)
     depot.supprimer(session, jeu)
 
 

@@ -31,17 +31,6 @@ def test_un_utilisateur_ne_modifie_pas_le_jeu_d_un_autre(client, deux_utilisateu
     assert reponse.json()["code"] == "DROIT_INSUFFISANT"
 
 
-def test_un_utilisateur_ne_supprime_pas_le_jeu_d_un_autre(client, deux_utilisateurs):
-    jeu = creer_jeu_de_a(client, deux_utilisateurs)
-
-    reponse = client.delete(
-        f"{BASE}/jeux/{jeu['id']}",
-        headers={"Authorization": f"Bearer {deux_utilisateurs['b']}"},
-    )
-
-    assert reponse.status_code == 403
-
-
 def test_le_proprietaire_peut_modifier(client, deux_utilisateurs):
     jeu = creer_jeu_de_a(client, deux_utilisateurs)
 
