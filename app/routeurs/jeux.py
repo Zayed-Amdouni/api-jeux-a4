@@ -68,6 +68,11 @@ def statistiques(session: SessionDep):
     return service.statistiques(session)
 
 
+@routeur.get("/par-editeur", response_model=list[JeuResume])
+def par_editeur(session: SessionDep, nom: str):
+    return service.par_editeur(session, nom)
+
+
 @routeur.get(
     "/{jeu_id}",
     response_model=JeuSortie,
