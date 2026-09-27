@@ -156,6 +156,7 @@ class JeuResume(BaseModel):
     titre: str
     genre: str
     note: int
+    editeur_nom: str | None = None
 
 
 class JeuSortie(BaseModel):

@@ -5,7 +5,7 @@ exception applicative — c'est le service qui décide.
 """
 
 from sqlalchemy import Select, func, select
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Session
 
 from app.tables.jeux import Jeu, Modification
 
@@ -50,14 +50,7 @@ def lister(
     colonne = {"titre": Jeu.titre, "note": Jeu.note, "annee": Jeu.annee}[tri]
     ordre = colonne.desc() if tri == "annee" else colonne.asc()
 
-    # `selectinload` : deux requêtes au total, quel que soit le nombre de jeux.
-    # Sans lui, une requête par jeu pour charger l'éditeur — le problème N+1.
-    requete = (
-        requete.options(selectinload(Jeu.editeur))
-        .order_by(ordre, Jeu.id)
-        .offset(saut)
-        .limit(limite)
-    )
+    requete = requete.order_by(ordre, Jeu.id).offset(saut).limit(limite)
     return list(session.scalars(requete).all())
 
 
