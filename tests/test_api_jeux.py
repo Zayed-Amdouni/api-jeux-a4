@@ -203,6 +203,24 @@ def test_statistiques(client, entetes):
     assert corps["par_genre"] == {"Party": 1, "Roguelike": 1}
 
 
+def test_genres_presents_dans_le_catalogue(client, entetes):
+    creer_jeu(client, entetes, titre="Hades", genre="Roguelike", note=9, annee=2020)
+    creer_jeu(client, entetes, titre="Celeste", genre="Plateforme", note=9, annee=2018)
+    creer_jeu(client, entetes, titre="Dead Cells", genre="Roguelike", note=8, annee=2018)
+
+    reponse = client.get(f"{BASE}/jeux/genres")
+
+    assert reponse.status_code == 200
+    assert reponse.json() == ["Plateforme", "Roguelike"]
+
+
+def test_genres_sur_un_catalogue_vide(client):
+    reponse = client.get(f"{BASE}/jeux/genres")
+
+    assert reponse.status_code == 200
+    assert reponse.json() == []
+
+
 def test_editeur_imbrique_dans_la_reponse(client, entetes, editeur):
     cree = creer_jeu(client, entetes, editeur_id=editeur.id)
 
