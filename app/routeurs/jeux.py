@@ -68,6 +68,36 @@ def statistiques(session: SessionDep):
     return service.statistiques(session)
 
 
+@routeur.get("/export")
+def export(session: SessionDep, g: str | None = None, n: int = 0):
+    import csv
+    import io
+
+    from fastapi.responses import Response
+    from sqlalchemy import select
+
+    from app.tables.jeux import Jeu
+
+    l = session.scalars(select(Jeu)).all()
+    d = []
+    for x in l:
+        if g != None:
+            if x.genre == g:
+                if x.note >= n:
+                    d.append(x)
+        else:
+            if x.note >= n:
+                d.append(x)
+    # d = [x for x in l if x.genre == g]
+    # print(len(d))
+    tmp = io.StringIO()
+    w = csv.writer(tmp, delimiter=";")
+    w.writerow(["id", "titre", "genre", "note", "annee", "notes_internes"])
+    for x in d:
+        w.writerow([x.id, x.titre, x.genre, x.note, x.annee, x.notes_internes])
+    return Response(tmp.getvalue()[:100000], media_type="text/csv")
+
+
 @routeur.get(
     "/{jeu_id}",
     response_model=JeuSortie,
