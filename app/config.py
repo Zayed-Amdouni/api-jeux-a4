@@ -5,12 +5,19 @@ manquante empêche le lancement avec un message explicite, au lieu de produire
 un `None` qui échouera plus tard, en production, au pire moment.
 """
 
+import json
+
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Configuration(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    # `enable_decoding=False` : sans lui, `pydantic-settings` tente un décodage
+    # JSON *dans la source*, avant les validateurs — et la forme `A,B` échoue
+    # avant même que `decouper_origines` ne soit appelé.
+    model_config = SettingsConfigDict(
+        env_file=".env", extra="ignore", enable_decoding=False
+    )
 
     # Obligatoires : aucune valeur par défaut, le démarrage échoue sans elles.
     database_url: str
@@ -30,8 +37,11 @@ class Configuration(BaseSettings):
     @classmethod
     def decouper_origines(cls, valeur: object) -> object:
         """Accepte `A,B` autant qu'une liste JSON, pour les plateformes d'hébergement."""
-        if isinstance(valeur, str) and not valeur.strip().startswith("["):
-            return [origine.strip() for origine in valeur.split(",") if origine.strip()]
+        if isinstance(valeur, str):
+            texte = valeur.strip()
+            if texte.startswith("["):
+                return json.loads(texte)
+            return [origine.strip() for origine in texte.split(",") if origine.strip()]
         return valeur
 
     @field_validator("database_url")
