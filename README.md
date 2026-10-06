@@ -32,9 +32,6 @@ CLE_SECRETE=                                  # collez la clé générée ci-des
 ORIGINES_AUTORISEES=["http://localhost:5173"]
 ```
 
-`ORIGINES_AUTORISEES` doit être écrite entre crochets, comme ci-dessus. La forme
-sans crochets livrée par `.env.example` fait échouer le démarrage.
-
 Générez votre clé, et collez-la dans `CLE_SECRETE` :
 
 ```bash
